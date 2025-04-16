@@ -54,12 +54,12 @@ app.post("/leads",async(req,res)=>{
         if(!name || !source || !salesAgent || !status || !timeToClose || !priority){
             return res.status(400).json({error:"All fields are required"})
         }
-            let saleAgentValid = await SalesAgent.findOne({_id:salesAgent}).populate("author")
+            let saleAgentValid = await SalesAgent.findOne({_id:salesAgent})
             if(!saleAgentValid){
                return res.status(404).json({error: `Sales agent with ID ${salesAgent} not found.`
                   })
             }  
-        const savedData = new Lead(data)
+        const savedData = new Lead(data).populate("salesAgent")
       await savedData.save()
         res.status(201).json({message:"Added Successfully",savedData})
     }catch(error){
