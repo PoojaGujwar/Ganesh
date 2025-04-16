@@ -196,7 +196,7 @@ app.get("/report/pipeline",async(req,res)=>{
     if(!leads){
         res.status(404).json({error:"Any lead is not closed right now"})
     }
-    res.status(202).json({message:"Lead status is closed",leads:leads.length})
+    res.status(202).json({message:"Lead status is closed",totalLeadsInPipeline:leads.length})
     }catch(error){
         console.log(error)
         res.status(500).json({error:"Internal Server Error"})
