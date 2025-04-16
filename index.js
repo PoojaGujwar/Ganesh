@@ -59,7 +59,7 @@ app.post("/leads",async(req,res)=>{
                return res.status(404).json({error: `Sales agent with ID ${salesAgent} not found.`
                   })
             }  
-        const savedData = new Lead(data).populate("salesAgent")
+        const savedData = new Lead(data)
       await savedData.save()
         res.status(201).json({message:"Added Successfully",savedData})
     }catch(error){
@@ -69,7 +69,7 @@ app.post("/leads",async(req,res)=>{
 app.get("/leads",async(req,res)=>{
 try{
     const { salesAgent, status, tags, source } = req.query;
-    let filteredLeads =await Lead.find()
+    let filteredLeads =await Lead.find().populate("salesAgent")
     if(salesAgent){
         filteredLeads = filteredLeads.filter((leads) => leads.salesAgent == salesAgent);
     }
