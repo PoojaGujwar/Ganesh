@@ -54,7 +54,7 @@ app.post("/leads",async(req,res)=>{
         if(!name || !source || !salesAgent || !status || !timeToClose || !priority){
             return res.status(400).json({error:"All fields are required"})
         }
-            let saleAgentValid = await SalesAgent.findOne({_id:salesAgent})
+            let saleAgentValid = await SalesAgent.findOne({_id:salesAgent}).populate("author")
             if(!saleAgentValid){
                return res.status(404).json({error: `Sales agent with ID ${salesAgent} not found.`
                   })
@@ -149,18 +149,22 @@ app.get("/agents",async(req,res)=>{
     }
 })
 app.post("/leads/:id/comments",async(req,res)=>{
-    const leadId = req.params.id;
+    const _id = req.params.id;
     const comment = req.body;
+    console.log(_id)
         try{
-            const isValidLeadId = await Lead.find({_id:leadId})
-            if(isValidLeadId.length === 0){
-                res.status(404).json({error:`Lead with ID ${leadId} not found.`})
-            }
-            const updatedLead =await Comment(comment)
-           updatedLead.save()
-            res.status(200).json({message:"success",updatedLead})
+            const lead = await Lead.find({_id:_id})
+            console.log(lead)
+            // if(!lead){
+            //     res.status(404).json({error:`Lead with ID ${lead} not found.`})
+            // }
+            // console.log(comment, lead)
+            // Comment.push(comment);
+            
+            // Comment.save()
+            res.status(200).json({message:"success",lead})
     }catch(error){
-        res.status(500).json({error:"Internal Server Error"})
+        res.status(500).json({error:"Internal Server Error",error})
     }
 })
 app.get("/leads/:id/comments",async(req,res)=>{
@@ -192,7 +196,7 @@ app.get("/report/pipeline",async(req,res)=>{
     if(!leads){
         res.status(404).json({error:"Any lead is not closed right now"})
     }
-    res.status(202).json({message:"Lead status is closed",totalLeadsInPipeline:leads.length})
+    res.status(202).json({message:"Lead status is closed",leads.length})
     }catch(error){
         console.log(error)
         res.status(500).json({error:"Internal Server Error"})
