@@ -160,7 +160,7 @@ app.post("/leads/:id/comments",async(req,res)=>{
                 lead:_id,author,commentText
             })
            newComment.save()
-            res.status(200).json({message:"success",newComment})
+            res.status(200).json({message:"success",comments:Comment.find()})
     }catch(error){
         res.status(500).json({error:"Internal Server Error",error})
     }
