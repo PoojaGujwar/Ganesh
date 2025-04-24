@@ -148,21 +148,19 @@ app.get("/agents",async(req,res)=>{
         res.status(500).json({error:"Internal Server Error"})
     }
 })
-app.post("/leads/:id/comments",async(req,res)=>{
+app.post("/leads/:id/comments",async(req,res)=>{  
     const _id = req.params.id;
-    const comment = req.body;
-    console.log(_id)
+    const {author, commentText} = req.body;
         try{
             const lead = await Lead.find({_id:_id})
-            console.log(lead)
-            // if(!lead){
-            //     res.status(404).json({error:`Lead with ID ${lead} not found.`})
-            // }
-            // console.log(comment, lead)
-            // Comment.push(comment);
-            
-            // Comment.save()
-            res.status(200).json({message:"success",lead})
+            if(!lead){
+                res.status(404).json({error:`Lead with ID ${lead} not found.`})
+            }
+            const newComment = new Comment({
+                lead:_id,author,commentText
+            })
+           newComment.save()
+            res.status(200).json({message:"success",newComment})
     }catch(error){
         res.status(500).json({error:"Internal Server Error",error})
     }
