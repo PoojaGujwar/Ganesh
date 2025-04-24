@@ -159,8 +159,9 @@ app.post("/leads/:id/comments",async(req,res)=>{
             const newComment = new Comment({
                 lead:_id,author,commentText
             })
-           newComment.save()
-            res.status(200).json({message:"success",comments:Comment.find()})
+           await newComment.save()
+           const populatedComment = await newComment.populate("author", "name");
+            res.status(200).json({message:"success",populatedComment})
     }catch(error){
         res.status(500).json({error:"Internal Server Error",error})
     }
